@@ -14,6 +14,8 @@
 
     <!-- actionbar -->
     <string name="settings_titlebar">c:geo Settings</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
     
     <!-- caches -->
     <string name="all_types">All Cache Types</string>

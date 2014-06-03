@@ -573,7 +573,7 @@ public class CacheDetailActivity extends AbstractViewPagerActivity<CacheDetailAc
             setTitle(cache.getGeocode());
         }
 
-        getSupportActionBar().setIcon(getResources().getDrawable(cache.getType().markerId));
+        setIcon(cache.getType().markerId);
 
         // if we have a newer Android device setup Android Beam for easy cache sharing
         initializeAndroidBeam(

@@ -290,19 +290,14 @@ public class MainActivity extends AbstractActionBarActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
-        super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.menu_pocket_queries).setVisible(Settings.isGCPremiumMember());
-        return true;
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         final int id = item.getItemId();
         switch (id) {
-            case android.R.id.home:
-                // this activity must handle the home navigation different than all others
-                showAbout(null);
-                return true;
             case R.id.menu_about:
                 showAbout(null);
                 return true;

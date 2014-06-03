@@ -60,17 +60,17 @@ public abstract class AbstractActivity extends ActionBarActivity implements IAbs
     }
 
     @Override
-    public final void showToast(String text) {
+    public final void showToast(final String text) {
         ActivityMixin.showToast(this, text);
     }
 
     @Override
-    public final void showShortToast(String text) {
+    public final void showShortToast(final String text) {
         ActivityMixin.showShortToast(this, text);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
@@ -79,7 +79,7 @@ public abstract class AbstractActivity extends ActionBarActivity implements IAbs
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             return ActivityMixin.navigateUp(this);
         }
@@ -141,7 +141,7 @@ public abstract class AbstractActivity extends ActionBarActivity implements IAbs
     }
 
     @Override
-    public void setContentView(int layoutResID) {
+    public void setContentView(final int layoutResID) {
         super.setContentView(layoutResID);
 
         // initialize the action bar title with the activity title for single source
@@ -206,7 +206,7 @@ public abstract class AbstractActivity extends ActionBarActivity implements IAbs
         public String getUri();
     }
 
-    protected void initializeAndroidBeam(ActivitySharingInterface sharingInterface) {
+    protected void initializeAndroidBeam(final ActivitySharingInterface sharingInterface) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             initializeICSAndroidBeam(sharingInterface);
         }
@@ -214,17 +214,19 @@ public abstract class AbstractActivity extends ActionBarActivity implements IAbs
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     protected void initializeICSAndroidBeam(final ActivitySharingInterface sharingInterface) {
-        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        final NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (nfcAdapter == null) {
             return;
         }
         nfcAdapter.setNdefPushMessageCallback(new NfcAdapter.CreateNdefMessageCallback() {
             @Override
-            public NdefMessage createNdefMessage(NfcEvent event) {
-                NdefRecord record = NdefRecord.createUri(sharingInterface.getUri());
+            public NdefMessage createNdefMessage(final NfcEvent event) {
+                final NdefRecord record = NdefRecord.createUri(sharingInterface.getUri());
                 return new NdefMessage(new NdefRecord[]{record});
             }
         }, this);
 
     }
+
+
 }

@@ -1473,7 +1473,7 @@ public class CacheListActivity extends AbstractListActivity implements FilteredA
         }
     }
 
-    public static void startActivityNearest(final AbstractActivity context, final Geopoint coordsNow) {
+    public static void startActivityNearest(final Activity context, final Geopoint coordsNow) {
         if (!isValidCoords(context, coordsNow)) {
             return;
         }
@@ -1507,9 +1507,9 @@ public class CacheListActivity extends AbstractListActivity implements FilteredA
         context.startActivity(cachesIntent);
     }
 
-    private static boolean isValidCoords(final AbstractActivity context, final Geopoint coords) {
+    private static boolean isValidCoords(final Activity context, final Geopoint coords) {
         if (coords == null) {
-            context.showToast(CgeoApplication.getInstance().getString(R.string.warn_no_coordinates));
+            ActivityMixin.showToast(context, R.string.warn_no_coordinates);
             return false;
         }
         return true;

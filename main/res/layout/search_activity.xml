@@ -1,170 +1,184 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="?background_color"
-    android:orientation="vertical"
-    android:padding="4dip" >
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
-        <RelativeLayout style="@style/separator_horizontal_layout" >
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="?background_color"
+            android:orientation="vertical"
+            android:padding="4dip" >
 
-            <View style="@style/separator_horizontal" />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
 
-            <TextView
-                style="@style/separator_horizontal_headline"
-                android:text="@string/search_coordinates" />
-        </RelativeLayout>
+                <RelativeLayout style="@style/separator_horizontal_layout" >
 
-        <Button
-            android:id="@+id/buttonLatitude"
-            style="@style/button_full"
-            android:hint="@string/latitude" />
+                    <View style="@style/separator_horizontal" />
 
-        <Button
-            android:id="@+id/buttonLongitude"
-            style="@style/button_full"
-            android:hint="@string/longitude" />
+                    <TextView
+                        style="@style/separator_horizontal_headline"
+                        android:text="@string/search_coordinates" />
+                </RelativeLayout>
 
-        <Button
-            android:id="@+id/search_coordinates"
-            style="@style/button_full"
-            android:text="@string/search_coordinates_button" />
-        <!-- ** -->
+                <Button
+                    android:id="@+id/buttonLatitude"
+                    style="@style/button_full"
+                    android:hint="@string/latitude" />
 
-        <RelativeLayout style="@style/separator_horizontal_layout" >
+                <Button
+                    android:id="@+id/buttonLongitude"
+                    style="@style/button_full"
+                    android:hint="@string/longitude" />
 
-            <View style="@style/separator_horizontal" />
+                <Button
+                    android:id="@+id/search_coordinates"
+                    style="@style/button_full"
+                    android:text="@string/search_coordinates_button" />
+                <!-- ** -->
 
-            <TextView
-                style="@style/separator_horizontal_headline"
-                android:text="@string/search_address" />
-        </RelativeLayout>
+                <RelativeLayout style="@style/separator_horizontal_layout" >
 
-        <AutoCompleteTextView
-            android:id="@+id/address"
-            style="@style/edittext_full"
-            android:hint="@string/search_address"
-            android:imeOptions="actionGo" />
+                    <View style="@style/separator_horizontal" />
 
-        <Button
-            android:id="@+id/search_address"
-            style="@style/button_full"
-            android:text="@string/search_address_button" />
-        <!-- ** -->
+                    <TextView
+                        style="@style/separator_horizontal_headline"
+                        android:text="@string/search_address" />
+                </RelativeLayout>
 
-        <RelativeLayout style="@style/separator_horizontal_layout" >
+                <AutoCompleteTextView
+                    android:id="@+id/address"
+                    style="@style/edittext_full"
+                    android:hint="@string/search_address"
+                    android:imeOptions="actionGo" />
 
-            <View style="@style/separator_horizontal" />
+                <Button
+                    android:id="@+id/search_address"
+                    style="@style/button_full"
+                    android:text="@string/search_address_button" />
+                <!-- ** -->
 
-            <TextView
-                style="@style/separator_horizontal_headline"
-                android:text="@string/search_geo" />
-        </RelativeLayout>
+                <RelativeLayout style="@style/separator_horizontal_layout" >
 
-        <AutoCompleteTextView
-            android:id="@+id/geocode"
-            style="@style/edittext_full"
-            android:hint="@string/search_geo"
-            android:imeOptions="actionGo"
-            android:inputType="textCapCharacters"
-            android:text="GC"
-            tools:ignore="HardcodedText" />
+                    <View style="@style/separator_horizontal" />
 
-        <Button
-            android:id="@+id/display_geocode"
-            style="@style/button_full"
-            android:text="@string/search_geo_button" />
-        <!-- ** -->
+                    <TextView
+                        style="@style/separator_horizontal_headline"
+                        android:text="@string/search_geo" />
+                </RelativeLayout>
 
-        <RelativeLayout style="@style/separator_horizontal_layout" >
+                <AutoCompleteTextView
+                    android:id="@+id/geocode"
+                    style="@style/edittext_full"
+                    android:hint="@string/search_geo"
+                    android:imeOptions="actionGo"
+                    android:inputType="textCapCharacters"
+                    android:text="GC"
+                    tools:ignore="HardcodedText" />
 
-            <View style="@style/separator_horizontal" />
+                <Button
+                    android:id="@+id/display_geocode"
+                    style="@style/button_full"
+                    android:text="@string/search_geo_button" />
+                <!-- ** -->
 
-            <TextView
-                style="@style/separator_horizontal_headline"
-                android:text="@string/search_kw" />
-        </RelativeLayout>
+                <RelativeLayout style="@style/separator_horizontal_layout" >
 
-        <AutoCompleteTextView
-            android:id="@+id/keyword"
-            style="@style/edittext_full"
-            android:hint="@string/search_kw_prefill"
-            android:imeOptions="actionGo" />
+                    <View style="@style/separator_horizontal" />
 
-        <Button
-            android:id="@+id/search_keyword"
-            style="@style/button_full"
-            android:text="@string/search_kw_button" />
-        <!-- ** -->
+                    <TextView
+                        style="@style/separator_horizontal_headline"
+                        android:text="@string/search_kw" />
+                </RelativeLayout>
 
-        <RelativeLayout style="@style/separator_horizontal_layout" >
+                <AutoCompleteTextView
+                    android:id="@+id/keyword"
+                    style="@style/edittext_full"
+                    android:hint="@string/search_kw_prefill"
+                    android:imeOptions="actionGo" />
 
-            <View style="@style/separator_horizontal" />
+                <Button
+                    android:id="@+id/search_keyword"
+                    style="@style/button_full"
+                    android:text="@string/search_kw_button" />
+                <!-- ** -->
 
-            <TextView
-                style="@style/separator_horizontal_headline"
-                android:text="@string/search_fbu" />
-        </RelativeLayout>
+                <RelativeLayout style="@style/separator_horizontal_layout" >
 
-        <AutoCompleteTextView
-            android:id="@+id/finder"
-            style="@style/edittext_full"
-            android:hint="@string/search_fbu_prefill"
-            android:imeOptions="actionGo" />
+                    <View style="@style/separator_horizontal" />
 
-        <Button
-            android:id="@+id/search_finder"
-            style="@style/button_full"
-            android:text="@string/search_fbu_button" />
-        <!-- ** -->
+                    <TextView
+                        style="@style/separator_horizontal_headline"
+                        android:text="@string/search_fbu" />
+                </RelativeLayout>
 
-        <RelativeLayout style="@style/separator_horizontal_layout" >
+                <AutoCompleteTextView
+                    android:id="@+id/finder"
+                    style="@style/edittext_full"
+                    android:hint="@string/search_fbu_prefill"
+                    android:imeOptions="actionGo" />
 
-            <View style="@style/separator_horizontal" />
+                <Button
+                    android:id="@+id/search_finder"
+                    style="@style/button_full"
+                    android:text="@string/search_fbu_button" />
+                <!-- ** -->
 
-            <TextView
-                style="@style/separator_horizontal_headline"
-                android:text="@string/search_hbu" />
-        </RelativeLayout>
+                <RelativeLayout style="@style/separator_horizontal_layout" >
 
-        <AutoCompleteTextView
-            android:id="@+id/owner"
-            style="@style/edittext_full"
-            android:hint="@string/search_hbu_prefill"
-            android:imeOptions="actionGo" />
+                    <View style="@style/separator_horizontal" />
 
-        <Button
-            android:id="@+id/search_owner"
-            style="@style/button_full"
-            android:text="@string/search_hbu_button" />
-        <!-- ** -->
+                    <TextView
+                        style="@style/separator_horizontal_headline"
+                        android:text="@string/search_hbu" />
+                </RelativeLayout>
 
-        <RelativeLayout style="@style/separator_horizontal_layout" >
+                <AutoCompleteTextView
+                    android:id="@+id/owner"
+                    style="@style/edittext_full"
+                    android:hint="@string/search_hbu_prefill"
+                    android:imeOptions="actionGo" />
 
-            <View style="@style/separator_horizontal" />
+                <Button
+                    android:id="@+id/search_owner"
+                    style="@style/button_full"
+                    android:text="@string/search_hbu_button" />
+                <!-- ** -->
 
-            <TextView
-                style="@style/separator_horizontal_headline"
-                android:text="@string/search_tb" />
-        </RelativeLayout>
+                <RelativeLayout style="@style/separator_horizontal_layout" >
 
-        <AutoCompleteTextView
-            android:id="@+id/trackable"
-            style="@style/edittext_full"
-            android:hint="@string/search_tb_hint"
-            android:imeOptions="actionGo"
-            android:inputType="textCapCharacters" />
+                    <View style="@style/separator_horizontal" />
 
-        <Button
-            android:id="@+id/display_trackable"
-            style="@style/button_full"
-            android:text="@string/search_tb_button" />
-    </LinearLayout>
+                    <TextView
+                        style="@style/separator_horizontal_headline"
+                        android:text="@string/search_tb" />
+                </RelativeLayout>
 
-</ScrollView>
+                <AutoCompleteTextView
+                    android:id="@+id/trackable"
+                    style="@style/edittext_full"
+                    android:hint="@string/search_tb_hint"
+                    android:imeOptions="actionGo"
+                    android:inputType="textCapCharacters" />
+
+                <Button
+                    android:id="@+id/display_trackable"
+                    style="@style/button_full"
+                    android:text="@string/search_tb_button" />
+            </LinearLayout>
+        </ScrollView>
+    </FrameLayout>
+
+    <include layout="@layout/navigation_drawer" />
+
+</android.support.v4.widget.DrawerLayout>
