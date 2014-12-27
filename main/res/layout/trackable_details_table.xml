@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
+
+    <RelativeLayout style="@style/cacheDetailsRow" >
+
+        <TextView
+            android:id="@+id/nameLabel"
+            style="@style/cacheDetailsName"
+            android:text="@string/cache_name" />
+
+        <TextView
+            android:id="@+id/nameValue"
+            style="@style/cacheDetailsValue"
+            android:layout_toRightOf="@+id/nameLabel" />
+    </RelativeLayout>
+
+    <RelativeLayout style="@style/cacheDetailsRow" >
+
+        <TextView
+            android:id="@+id/typeLabel"
+            style="@style/cacheDetailsName"
+            android:text="@string/cache_type" />
+
+        <TextView
+            android:id="@+id/typeValue"
+            style="@style/cacheDetailsValue"
+            android:layout_toRightOf="@+id/typeLabel" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/sizeRow"
+        style="@style/cacheDetailsRow" >
+
+        <TextView
+            android:id="@+id/sizeLabel"
+            style="@style/cacheDetailsName"
+            android:text="@string/cache_size" />
+
+        <TextView
+            android:id="@+id/sizeValue"
+            style="@style/cacheDetailsValue"
+            android:layout_toRightOf="@+id/sizeLabel" />
+    </RelativeLayout>
+
+    <RelativeLayout style="@style/cacheDetailsRow" >
+
+        <TextView
+            android:id="@+id/geocodeLabel"
+            style="@style/cacheDetailsName"
+            android:text="@string/cache_geocode" />
+
+        <TextView
+            android:id="@+id/geocodeValue"
+            style="@style/cacheDetailsValue"
+            android:layout_toRightOf="@+id/geocodeLabel" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/statusRow"
+        style="@style/cacheDetailsRow" >
+
+        <TextView
+            android:id="@+id/statusLabel"
+            style="@style/cacheDetailsName"
+            android:text="@string/cache_status" />
+
+        <TextView
+            android:id="@+id/statusValue"
+            style="@style/cacheDetailsValue"
+            android:layout_toRightOf="@+id/statusLabel" />
+    </RelativeLayout>
+
+    <RelativeLayout style="@style/cacheDetailsRow" >
+
+        <TextView
+            android:id="@+id/distanceLabel"
+            style="@style/cacheDetailsName"
+            android:text="@string/cache_distance" />
+
+        <TextView
+            android:id="@+id/distanceValue"
+            style="@style/cacheDetailsValue"
+            android:layout_toRightOf="@+id/distanceLabel" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/difficultyRow"
+        style="@style/cacheDetailsRow" >
+
+        <TextView
+            android:id="@+id/difficultyLabel"
+            style="@style/cacheDetailsName"
+            android:text="@string/cache_difficulty" />
+
+        <TextView
+            android:id="@+id/difficultyValue"
+            style="@style/cacheDetailsValue"
+            android:layout_toRightOf="@+id/difficultyLabel" />
+
+        <RatingBar
+            android:id="@+id/difficultyStars"
+            style="@style/cacheDetailsStars"
+            android:layout_toRightOf="@+id/difficultyValue" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/terrainRow"
+        style="@style/cacheDetailsRow" >
+
+        <TextView
+            android:id="@+id/terrainLabel"
+            style="@style/cacheDetailsName"
+            android:text="@string/cache_terrain" />
+
+        <TextView
+            android:id="@+id/terrainValue"
+            style="@style/cacheDetailsValue"
+            android:layout_toRightOf="@+id/terrainLabel" />
+
+        <RatingBar
+            android:id="@+id/terrainStars"
+            style="@style/cacheDetailsStars"
+            android:layout_toRightOf="@+id/terrainValue" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ratingRow"
+        style="@style/cacheDetailsRow" >
+
+        <TextView
+            android:id="@+id/ratingLabel"
+            style="@style/cacheDetailsName"
+            android:text="@string/cache_rating" />
+
+        <TextView
+            android:id="@+id/ratingValue"
+            style="@style/cacheDetailsValue"
+            android:layout_toRightOf="@+id/ratingLabel" />
+
+        <RatingBar
+            android:id="@+id/ratingStars"
+            style="@style/cacheDetailsStars"
+            android:layout_toRightOf="@+id/ratingValue" />
+
+        <TextView
+            android:id="@+id/ratingVotes"
+            style="@style/cacheDetailsAddition"
+            android:layout_toRightOf="@+id/ratingStars" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/favoritesRow"
+        style="@style/cacheDetailsRow" >
+
+        <TextView
+            android:id="@+id/favoritesLabel"
+            style="@style/cacheDetailsName"
+            android:text="@string/cache_favorite" />
+
+        <TextView
+            android:id="@+id/favoritesValue"
+            style="@style/cacheDetailsValue"
+            android:layout_toRightOf="@+id/favoritesLabel" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/myRatingRow"
+        style="@style/cacheDetailsRow" >
+
+        <TextView
+            android:id="@+id/myRatingLabel"
+            style="@style/cacheDetailsName"
+            android:text="@string/cache_own_rating" />
+
+        <TextView
+            android:id="@+id/myRatingValue"
+            style="@style/cacheDetailsValue"
+            android:layout_toRightOf="@+id/myRatingLabel" />
+
+        <RatingBar
+            android:id="@+id/myRatingStars"
+            style="@style/cacheDetailsStars"
+            android:layout_toRightOf="@+id/myRatingValue" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ownerRow"
+        style="@style/cacheDetailsRow" >
+
+        <TextView
+            android:id="@+id/ownerLabel"
+            style="@style/cacheDetailsName"
+            android:text="@string/cache_owner" />
+
+        <TextView
+            android:id="@+id/ownerValue"
+            style="@style/cacheDetailsValue"
+            android:layout_toRightOf="@+id/ownerLabel" />
+    </RelativeLayout>
+
+    <RelativeLayout style="@style/cacheDetailsRow" >
+
+        <TextView
+            android:id="@+id/hiddenLabel"
+            style="@style/cacheDetailsName"
+            android:text="@string/cache_hidden" />
+
+        <TextView
+            android:id="@+id/hiddenValue"
+            style="@style/cacheDetailsValue"
+            android:layout_toRightOf="@+id/hiddenLabel" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/locationRow"
+        style="@style/cacheDetailsRow" >
+
+        <TextView
+            android:id="@+id/locationLabel"
+            style="@style/cacheDetailsName"
+            android:text="@string/cache_location" />
+
+        <TextView
+            android:id="@+id/locationValue"
+            style="@style/cacheDetailsValue"
+            android:layout_toRightOf="@+id/locationLabel" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/coordsRow"
+        style="@style/cacheDetailsRow" >
+
+        <TextView
+            android:id="@+id/coordsLabel"
+            style="@style/cacheDetailsName"
+            android:text="@string/cache_coordinates" />
+
+        <TextView
+            android:id="@+id/coordsValue"
+            style="@style/cacheDetailsValue"
+            android:layout_toRightOf="@+id/coordsLabel" />
+    </RelativeLayout>
+
+</merge>

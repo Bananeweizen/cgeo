@@ -7,6 +7,7 @@
     tools:context=".CacheDetailActivity$DetailsViewCreator" >
 
     <LinearLayout
+        android:id="@+id/cache_details"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -14,12 +15,7 @@
 
         <!-- Details list -->
 
-        <LinearLayout
-            android:id="@+id/details_list"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-        </LinearLayout>
+        <include layout="@layout/cache_details_table"  android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
         <!-- Attributes box -->
 

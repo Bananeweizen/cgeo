@@ -114,7 +114,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
@@ -786,9 +785,6 @@ public class CacheDetailActivity extends AbstractViewPagerActivity<CacheDetailAc
      * Creator for details-view.
      */
     private class DetailsViewCreator extends AbstractCachingPageViewCreator<ScrollView> {
-        // Reference to the details list and favorite line, so that the helper-method can access them without an additional argument
-        private LinearLayout detailsList;
-        private ImmutablePair<RelativeLayout, TextView> favoriteLine;
 
         @Override
         public ScrollView getDispatchedView(final ViewGroup parentView) {
@@ -813,8 +809,7 @@ public class CacheDetailActivity extends AbstractViewPagerActivity<CacheDetailAc
                         }
                     });
 
-            detailsList = ButterKnife.findById(view, R.id.details_list);
-            final CacheDetailsCreator details = new CacheDetailsCreator(CacheDetailActivity.this, detailsList);
+            final CacheDetailsCreator details = new CacheDetailsCreator(CacheDetailActivity.this, R.id.cache_details);
 
             // cache name (full name)
             final Spannable span = (new Spannable.Factory()).newSpannable(cache.getName());
@@ -825,30 +820,35 @@ public class CacheDetailActivity extends AbstractViewPagerActivity<CacheDetailAc
                 span.setSpan(new ForegroundColorSpan(res.getColor(R.color.archived_cache_color)), 0, span.toString().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
 
-            addContextMenu(details.add(R.string.cache_name, span).right);
-            details.add(R.string.cache_type, cache.getType().getL10n());
-            details.addSize(cache);
-            addContextMenu(details.add(R.string.cache_geocode, cache.getGeocode()).right);
-            details.addCacheState(cache);
+            details.setText(R.id.nameValue, span);
+            //            addContextMenu(R.id.nameValue);
 
-            details.addDistance(cache, cacheDistanceView);
-            cacheDistanceView = details.getValueView();
+            details.setText(R.id.typeValue, cache.getType().getL10n());
+
+            final boolean sizeVisible = null != cache.getSize() && cache.showSize();
+            if (details.setVisible(R.id.sizeRow, sizeVisible)) {
+                details.setText(R.id.sizeValue, cache.getSize().getL10n());
+            }
+
+            details.setText(R.id.geocodeValue,cache.getGeocode());
+            //            addContextMenu(R.string.cache_geocode, );
+
+            details.setText(R.id.statusValue, details.getCacheStatus(cache));
+
+            cacheDistanceView = details.setDistance(cache);
 
             details.addDifficulty(cache);
             details.addTerrain(cache);
             details.addRating(cache);
 
-            // favorite count
-            favoriteLine = details.add(R.string.cache_favorite, "");
+            // favorite line is updated together with favorite management box
 
-            // own rating
-            if (cache.getMyVote() > 0) {
-                details.addStars(R.string.cache_own_rating, cache.getMyVote());
-            }
+            details.addOwnRating(cache);
 
             // cache author
-            if (StringUtils.isNotBlank(cache.getOwnerDisplayName()) || StringUtils.isNotBlank(cache.getOwnerUserId())) {
-                final TextView ownerView = details.add(R.string.cache_owner, "").right;
+            final boolean ownerVisible = StringUtils.isNotBlank(cache.getOwnerDisplayName()) || StringUtils.isNotBlank(cache.getOwnerUserId());
+            if (details.setVisible(R.id.ownerRow, ownerVisible)) {
+                final TextView ownerView = details.findDetailView(R.id.ownerValue);
                 if (StringUtils.isNotBlank(cache.getOwnerDisplayName())) {
                     ownerView.setText(cache.getOwnerDisplayName(), TextView.BufferType.SPANNABLE);
                 } else { // OwnerReal guaranteed to be not blank based on above
@@ -864,15 +864,16 @@ public class CacheDetailActivity extends AbstractViewPagerActivity<CacheDetailAc
             }
 
             // cache location
-            if (StringUtils.isNotBlank(cache.getLocation())) {
-                details.add(R.string.cache_location, cache.getLocation());
+            final boolean locationVisible = StringUtils.isNotBlank(cache.getLocation());
+            if (details.setVisible(R.id.locationRow, locationVisible)) {
+                details.setText(R.id.locationValue, cache.getLocation());
             }
 
             // cache coordinates
-            if (cache.getCoords() != null) {
-                final TextView valueView = details.add(R.string.cache_coordinates, cache.getCoords().toString()).right;
-                valueView.setOnClickListener(new CoordinatesFormatSwitcher(cache.getCoords()));
-                addContextMenu(valueView);
+            if (details.setVisible(R.id.coordsRow, cache.getCoords() != null)) {
+                details.setText(R.id.coordsValue, cache.getCoords().toString());
+                //                valueView.setOnClickListener(new CoordinatesFormatSwitcher(cache.getCoords()));
+                //                addContextMenu(valueView);
             }
 
             // cache attributes
@@ -1197,11 +1198,13 @@ public class CacheDetailActivity extends AbstractViewPagerActivity<CacheDetailAc
          */
         private void updateFavPointBox() {
             // Favorite counts
+            final View favoritesRow = ButterKnife.findById(view, R.id.favoritesRow);
             if (cache.getFavoritePoints() > 0) {
-                favoriteLine.left.setVisibility(View.VISIBLE);
-                favoriteLine.right.setText(cache.getFavoritePoints() + "×");
+                favoritesRow.setVisibility(View.VISIBLE);
+                final TextView favoritesText = ButterKnife.findById(view, R.id.favoritesValue);
+                favoritesText.setText(cache.getFavoritePoints() + "×");
             } else {
-                favoriteLine.left.setVisibility(View.GONE);
+                favoritesRow.setVisibility(View.GONE);
             }
 
             final LinearLayout layout = ButterKnife.findById(view, R.id.favpoint_box);
@@ -1788,12 +1791,12 @@ public class CacheDetailActivity extends AbstractViewPagerActivity<CacheDetailAc
                     @Override
                     public boolean onPrepareActionMode(final ActionMode actionMode, final Menu menu) {
                         switch (view.getId()) {
-                            case R.id.value: // coordinates, gc-code, name
-                                assert view instanceof TextView;
-                                clickedItemText = ((TextView) view).getText();
-                                final CharSequence itemTitle = ((TextView) ((View) view.getParent()).findViewById(R.id.name)).getText();
-                                buildDetailsContextMenu(actionMode, menu, itemTitle, true);
-                                return true;
+                        //                            case R.id.value: // coordinates, gc-code, name
+                        //                                assert view instanceof TextView;
+                        //                                clickedItemText = ((TextView) view).getText();
+                        //                                final CharSequence itemTitle = ((TextView) ((View) view.getParent()).findViewById(R.id.name)).getText();
+                        //                                buildDetailsContextMenu(actionMode, menu, itemTitle, true);
+                        //                                return true;
                             case R.id.shortdesc:
                                 clickedItemText = cache.getShortDescription();
                                 buildDetailsContextMenu(actionMode, menu, res.getString(R.string.cache_description), false);

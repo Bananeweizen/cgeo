@@ -6,107 +6,70 @@ import cgeo.geocaching.CgeoApplication;
 import cgeo.geocaching.Geocache;
 import cgeo.geocaching.ICoordinates;
 import cgeo.geocaching.R;
-import cgeo.geocaching.Waypoint;
 import cgeo.geocaching.connector.ConnectorFactory;
 import cgeo.geocaching.location.Units;
 import cgeo.geocaching.utils.Formatter;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.eclipse.jdt.annotation.NonNull;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO The suppression of this lint finding is bad. But to fix it, someone needs to rework the layout of the cache
-// details also, not just only change the code here.
-@SuppressLint("InflateParams")
 public final class CacheDetailsCreator {
+    private static final int MAX_RATING = 5;
+    private static final int MAX_DIFFICULTY = 5;
     private final Activity activity;
     private final ViewGroup parentView;
-    private TextView lastValueView;
     private final Resources res;
 
-    public CacheDetailsCreator(final Activity activity, final ViewGroup parentView) {
+    public CacheDetailsCreator(final Activity activity, final int parentViewId) {
         this.activity = activity;
         this.res = activity.getResources();
-        this.parentView = parentView;
-        parentView.removeAllViews();
+        this.parentView = ButterKnife.findById(activity, parentViewId);
     }
 
-    /**
-     * Create a "name: value" line.
-     *
-     * @param nameId the resource of the name field
-     * @param value the initial value
-     * @return a pair made of the whole "name: value" line (to be able to hide it for example) and of the value (to update it)
-     */
-    public ImmutablePair<RelativeLayout, TextView> add(final int nameId, final CharSequence value) {
-        final RelativeLayout layout = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.cache_information_item, null, false);
-        final TextView nameView = ButterKnife.findById(layout, R.id.name);
-        nameView.setText(res.getString(nameId));
-        lastValueView = ButterKnife.findById(layout, R.id.value);
-        lastValueView.setText(value);
-        parentView.addView(layout);
-        return ImmutablePair.of(layout, lastValueView);
+    private RatingBar setStars(final int valueViewId, final int starsViewId, final float value, final int max) {
+        setText(valueViewId, String.format("%.1f", value) + ' ' + activity.getResources().getString(R.string.cache_rating_of) + " " + String.format("%d", max));
+
+        final RatingBar starsView = ButterKnife.findById(parentView, starsViewId);
+        starsView.setMax(max);
+        starsView.setRating(value);
+        return starsView;
     }
 
-    public TextView getValueView() {
-        return lastValueView;
-    }
-
-    public RelativeLayout addStars(final int nameId, final float value) {
-        return addStars(nameId, value, 5);
-    }
-
-    public RelativeLayout addStars(final int nameId, final float value, final int max) {
-        final RelativeLayout layout = (RelativeLayout) activity.getLayoutInflater().inflate(R.layout.cache_information_item, null, false);
-        final TextView nameView = ButterKnife.findById(layout, R.id.name);
-        lastValueView = ButterKnife.findById(layout, R.id.value);
-
-        nameView.setText(activity.getResources().getString(nameId));
-        lastValueView.setText(String.format("%.1f", value) + ' ' + activity.getResources().getString(R.string.cache_rating_of) + " " + String.format("%d", max));
-
-        final RatingBar layoutStars = ButterKnife.findById(layout, R.id.stars);
-        layoutStars.setRating(value);
-        layoutStars.setVisibility(View.VISIBLE);
-
-        parentView.addView(layout);
-        return layout;
-    }
-
-    public void addCacheState(final Geocache cache) {
-        if (cache.isLogOffline() || cache.isArchived() || cache.isDisabled() || cache.isPremiumMembersOnly() || cache.isFound()) {
-            final List<String> states = new ArrayList<>(5);
-            String date = getVisitedDate(cache);
-            if (cache.isLogOffline()) {
-                states.add(res.getString(R.string.cache_status_offline_log) + date);
-                // reset the found date, to avoid showing it twice
-                date = "";
-            }
-            if (cache.isFound()) {
-                states.add(res.getString(R.string.cache_status_found) + date);
-            }
-            if (cache.isArchived()) {
-                states.add(res.getString(R.string.cache_status_archived));
-            }
-            if (cache.isDisabled()) {
-                states.add(res.getString(R.string.cache_status_disabled));
-            }
-            if (cache.isPremiumMembersOnly()) {
-                states.add(res.getString(R.string.cache_status_premium));
-            }
-            add(R.string.cache_status, StringUtils.join(states, ", "));
+    @NonNull
+    public String getCacheStatus(final Geocache cache) {
+        final List<String> states = new ArrayList<>(5);
+        String date = getVisitedDate(cache);
+        if (cache.isLogOffline()) {
+            states.add(res.getString(R.string.cache_status_offline_log) + date);
+            // reset the found date, to avoid showing it twice
+            date = "";
         }
+        if (cache.isFound()) {
+            states.add(res.getString(R.string.cache_status_found) + date);
+        }
+        if (cache.isArchived()) {
+            states.add(res.getString(R.string.cache_status_archived));
+        }
+        if (cache.isDisabled()) {
+            states.add(res.getString(R.string.cache_status_disabled));
+        }
+        if (cache.isPremiumMembersOnly()) {
+            states.add(res.getString(R.string.cache_status_premium));
+        }
+        if (states.isEmpty()) {
+            return StringUtils.EMPTY;
+        }
+        return StringUtils.join(states, ", ");
     }
 
     private static String getVisitedDate(final Geocache cache) {
@@ -122,13 +85,18 @@ public final class CacheDetailsCreator {
     }
 
     public void addRating(final Geocache cache) {
-        if (cache.getRating() > 0) {
-            final RelativeLayout itemLayout = addStars(R.string.cache_rating, cache.getRating());
+        if (setVisible(R.id.ratingRow, cache.getRating() > 0)) {
+            setStars(R.id.ratingValue, R.id.ratingStars, cache.getRating(), MAX_RATING);
             if (cache.getVotes() > 0) {
-                final TextView itemAddition = ButterKnife.findById(itemLayout, R.id.addition);
+                final TextView itemAddition = findDetailView(R.id.ratingVotes);
                 itemAddition.setText(" (" + cache.getVotes() + ')');
-                itemAddition.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    public void addOwnRating(final Geocache cache) {
+        if (setVisible(R.id.myRatingRow, cache.getMyVote() > 0)) {
+            setStars(R.id.myRatingValue, R.id.myRatingStars, cache.getMyVote(), MAX_RATING);
         }
     }
 
@@ -139,18 +107,18 @@ public final class CacheDetailsCreator {
     }
 
     public void addDifficulty(final Geocache cache) {
-        if (cache.getDifficulty() > 0) {
-            addStars(R.string.cache_difficulty, cache.getDifficulty());
+        if (setVisible(R.id.difficultyRow, cache.getDifficulty() > 0)) {
+            setStars(R.id.difficultyValue, R.id.difficultyStars, cache.getDifficulty(), MAX_DIFFICULTY);
         }
     }
 
     public void addTerrain(final Geocache cache) {
-        if (cache.getTerrain() > 0) {
-            addStars(R.string.cache_terrain, cache.getTerrain(), ConnectorFactory.getConnector(cache).getMaxTerrain());
+        if (setVisible(R.id.terrainRow, cache.getTerrain() > 0)) {
+            setStars(R.id.terrainValue, R.id.terrainStars, cache.getTerrain(), ConnectorFactory.getConnector(cache).getMaxTerrain());
         }
     }
 
-    public void addDistance(final Geocache cache, final TextView cacheDistanceView) {
+    public TextView setDistance(final Geocache cache) {
         Float distance = distanceNonBlocking(cache);
         if (distance == null) {
             if (cache.getDistance() != null) {
@@ -161,26 +129,9 @@ public final class CacheDetailsCreator {
         if (distance != null) {
             text = Units.getDistanceFromKilometers(distance);
         }
-        else if (cacheDistanceView != null) {
-            // if there is already a distance in cacheDistance, use it instead of resetting to default.
-            // this prevents displaying "--" while waiting for a new position update (See bug #1468)
-            text = cacheDistanceView.getText().toString();
-        }
-        add(R.string.cache_distance, text);
-    }
-
-    public void addDistance(final Waypoint wpt, final TextView waypointDistanceView) {
-        final Float distance = distanceNonBlocking(wpt);
-        String text = "--";
-        if (distance != null) {
-            text = Units.getDistanceFromKilometers(distance);
-        }
-        else if (waypointDistanceView != null) {
-            // if there is already a distance in waypointDistance, use it instead of resetting to default.
-            // this prevents displaying "--" while waiting for a new position update (See bug #1468)
-            text = waypointDistanceView.getText().toString();
-        }
-        add(R.string.cache_distance, text);
+        final TextView distanceView = findDetailView(R.id.distanceValue);
+        distanceView.setText(text);
+        return distanceView;
     }
 
     public void addEventDate(@NonNull final Geocache cache) {
@@ -198,5 +149,18 @@ public final class CacheDetailsCreator {
         final TextView view = add(cache.isEventCache() ? R.string.cache_event : R.string.cache_hidden, dateString).right;
         view.setId(R.id.date);
         return view;
+    }
+
+    public void setText(final int valueViewId, final CharSequence text) {
+        findDetailView(valueViewId).setText(text);
+    }
+
+    public TextView findDetailView(final int valueViewId) {
+        return ButterKnife.findById(parentView, valueViewId);
+    }
+
+    public boolean setVisible(final int rowViewId, final boolean visible) {
+        ButterKnife.findById(parentView, rowViewId).setVisibility(visible ? View.VISIBLE : View.GONE);
+        return visible;
     }
 }

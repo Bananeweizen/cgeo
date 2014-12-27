@@ -36,7 +36,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,7 +45,7 @@ public abstract class AbstractDialogFragment extends DialogFragment implements C
     protected CacheDetailsCreator details;
 
     private Subscription resumeSubscription = Subscriptions.empty();
-    private TextView cacheDistance = null;
+    private final TextView cacheDistance = null;
 
 
     protected static final String GEOCODE_ARG= "GEOCODE";
@@ -205,46 +204,46 @@ public abstract class AbstractDialogFragment extends DialogFragment implements C
     }
 
     protected final void addCacheDetails() {
-        assert cache != null;
-        // cache type
-        final String cacheType = cache.getType().getL10n();
-        final String cacheSize = cache.showSize() ? " (" + cache.getSize().getL10n() + ")" : "";
-        details.add(R.string.cache_type, cacheType + cacheSize);
-
-        details.add(R.string.cache_geocode, cache.getGeocode());
-        details.addCacheState(cache);
-
-        details.addDistance(cache, cacheDistance);
-        cacheDistance = details.getValueView();
-
-        details.addDifficulty(cache);
-        details.addTerrain(cache);
-        details.addEventDate(cache);
-
-        // rating
-        if (cache.getRating() > 0) {
-            details.addRating(cache);
-        } else {
-            aquireGCVote();
-        }
-
-        // favorite count
-        details.add(R.string.cache_favorite, cache.getFavoritePoints() + "×");
-
-        // more details
-        final Button buttonMore = (Button) getView().findViewById(R.id.more_details);
-
-        buttonMore.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(final View arg0) {
-                CacheDetailActivity.startActivity(getActivity(), geocode);
-                getActivity().finish();
-            }
-        });
-
-        /* Only working combination as it seems */
-        registerForContextMenu(buttonMore);
+        //        assert cache != null;
+        //        // cache type
+        //        final String cacheType = cache.getType().getL10n();
+        //        final String cacheSize = cache.showSize() ? " (" + cache.getSize().getL10n() + ")" : "";
+        //        details.add(R.string.cache_type, cacheType + cacheSize);
+        //
+        //        details.add(R.string.cache_geocode, cache.getGeocode());
+        //        details.addCacheStatus(cache);
+        //
+        //        details.addDistance(cache, cacheDistance);
+        //        cacheDistance = details.getValueView();
+        //
+        //        details.addDifficulty(cache);
+        //        details.addTerrain(cache);
+        //        details.addEventDate(cache);
+        //
+        //        // rating
+        //        if (cache.getRating() > 0) {
+        //            details.addRating(cache);
+        //        } else {
+        //            aquireGCVote();
+        //        }
+        //
+        //        // favorite count
+        //        details.add(R.string.cache_favorite, cache.getFavoritePoints() + "×");
+        //
+        //        // more details
+        //        final Button buttonMore = (Button) getView().findViewById(R.id.more_details);
+        //
+        //        buttonMore.setOnClickListener(new View.OnClickListener() {
+        //
+        //            @Override
+        //            public void onClick(final View arg0) {
+        //                CacheDetailActivity.startActivity(getActivity(), geocode);
+        //                getActivity().finish();
+        //            }
+        //        });
+        //
+        //        /* Only working combination as it seems */
+        //        registerForContextMenu(buttonMore);
     }
 
     public final void showToast(final String text) {

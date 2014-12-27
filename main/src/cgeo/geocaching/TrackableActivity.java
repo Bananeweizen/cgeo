@@ -386,7 +386,7 @@ public class TrackableActivity extends AbstractViewPagerActivity<TrackableActivi
             view = (ScrollView) getLayoutInflater().inflate(R.layout.trackable_details_view, parentView, false);
             ButterKnife.inject(this, view);
 
-            final CacheDetailsCreator details = new CacheDetailsCreator(TrackableActivity.this, detailsList);
+            final CacheDetailsCreator details = new CacheDetailsCreator(TrackableActivity.this, R.id.details_list);
 
             // action bar icon
             if (StringUtils.isNotBlank(trackable.getIconUrl())) {
