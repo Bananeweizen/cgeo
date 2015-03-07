@@ -14,6 +14,8 @@ import org.androidannotations.annotations.OptionsMenu;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+import rx.functions.Func2;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +23,10 @@ import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SimpleExpandableListAdapter;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,11 +40,26 @@ import java.util.Map;
 @EActivity
 public class FilterActivity extends AbstractActionBarActivity {
 
-    public static final String EXTRA_FILTER_RESULT = null;
     public static final int REQUEST_SELECT_FILTER = 1234;
 
     private static final String KEY_FILTER_NAME = "filterName";
     private static final String KEY_FILTER_GROUP_NAME = "filterGroupName";
+
+    @InjectView(R.id.terrainLabel) protected TextView terrainLabel;
+    @InjectView(R.id.terrainMin) protected SeekBar terrainMin;
+    @InjectView(R.id.terrainMax) protected SeekBar terrainMax;
+
+    @InjectView(R.id.difficultyLabel) protected TextView difficultyLabel;
+    @InjectView(R.id.difficultyMin) protected SeekBar difficultyMin;
+    @InjectView(R.id.difficultyMax) protected SeekBar difficultyMax;
+
+    @InjectView(R.id.distanceLabel) protected TextView distanceLabel;
+    @InjectView(R.id.distanceMin) protected SeekBar distanceMin;
+    @InjectView(R.id.distanceMax) protected SeekBar distanceMax;
+
+    @InjectView(R.id.favoritesLabel) protected TextView favoritesLabel;
+    @InjectView(R.id.favoritesMin) protected SeekBar favoritesMin;
+    @InjectView(R.id.favoritesMax) protected SeekBar favoritesMax;
 
     @InjectView(R.id.filterList) protected ExpandableListView filterList;
     @InjectView(R.id.filters) protected LinearLayout filtersContainer;
@@ -49,7 +69,87 @@ public class FilterActivity extends AbstractActionBarActivity {
         super.onCreate(savedInstanceState, R.layout.filter_activity);
         ButterKnife.inject(this);
 
+        initializeSeekbars();
         createListAdapter();
+    }
+
+    private void initializeSeekbars() {
+        initializeSeekbar(terrainMin, terrainMax, TerrainFilter.TERRAIN_MIN, TerrainFilter.TERRAIN_MAX, 0.5f, terrainLabel, R.string.cache_terrain, new Func2<Float, Float, IFilter>() {
+
+            @Override
+            public IFilter call(final Float min, final Float max) {
+                return TerrainFilter.create(min, max);
+            }
+        });
+        initializeSeekbar(difficultyMin, difficultyMax, DifficultyFilter.DIFFICULTY_MIN, DifficultyFilter.DIFFICULTY_MAX, 0.5f, difficultyLabel, R.string.cache_difficulty);
+        initializeSeekbar(distanceMin, distanceMax, 0, 50, 1f, distanceLabel, R.string.cache_distance);
+        initializeSeekbar(favoritesMin, favoritesMax, 0, 50, 1f, favoritesLabel, R.string.caches_filter_popularity);
+    }
+
+    private void initializeSeekbar(final SeekBar minBar, final SeekBar maxBar, final int minValue, final int maxValue, final float stepSize, final TextView labelView, final int labelResId, final Func2<Float, Float, IFilter> filterFunc) {
+        final float range = (maxValue - minValue) / stepSize;
+        final int limit = Math.round(range);
+        minBar.setMax(limit);
+        maxBar.setMax(limit);
+        maxBar.setProgress(limit);
+        final OnSeekBarChangeListener listener = createChangeListener(minBar, maxBar, minValue, stepSize, labelView, labelResId, filterFunc);
+        minBar.setOnSeekBarChangeListener(listener);
+        maxBar.setOnSeekBarChangeListener(listener);
+    }
+
+    private OnSeekBarChangeListener createChangeListener(final SeekBar minBar, final SeekBar maxBar, final int rangeMin, final float stepSize, final TextView labelView, final int labelResId, final Func2<Float, Float, IFilter> filterFunc) {
+        return new OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(final SeekBar seekBar) {
+                // empty
+            }
+
+            @Override
+            public void onStartTrackingTouch(final SeekBar seekBar) {
+                // empty
+            }
+
+            @Override
+            public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
+                limitRange(minBar, maxBar, seekBar);
+                updateLabel(minBar, maxBar, rangeMin, stepSize, labelView, labelResId);
+                updateFilter(getSeekbarValue(minBar, rangeMin, stepSize), getSeekbarValue(maxBar, rangeMin, stepSize));
+            }
+
+        };
+    }
+
+    protected void updateFilter(final float minValue, final float maxValue) {
+        // TODO Auto-generated method stub
+
+    }
+
+    protected void updateLabel(final SeekBar minBar, final SeekBar maxBar, final int rangeMin, final float stepSize, final TextView labelView, final int labelResId) {
+        final float minValue = getSeekbarValue(minBar, rangeMin, stepSize);
+        final float maxValue = getSeekbarValue(maxBar, rangeMin, stepSize);
+        labelView.setText(getString(labelResId) + ": " + minValue + '…' + maxValue);
+    }
+
+    private static float getSeekbarValue(final SeekBar seekBar, final int rangeMin, final float stepSize) {
+        return seekBar.getProgress() * stepSize + rangeMin;
+    }
+
+    protected static void limitRange(final SeekBar min, final SeekBar max, final SeekBar current) {
+        if (current == min) {
+            if (max.getProgress() < min.getProgress()) {
+                max.setProgress(min.getProgress());
+            }
+        }
+        if (current == max) {
+            if (max.getProgress() < min.getProgress()) {
+                min.setProgress(max.getProgress());
+            }
+        }
+    }
+
+    protected static float seekBarValue(final SeekBar seekBar) {
+        return seekBar.getProgress() / 2f + 1f;
     }
 
     private void createListAdapter() {
@@ -73,14 +173,14 @@ public class FilterActivity extends AbstractActionBarActivity {
 
             @Override
             public boolean onChildClick(final ExpandableListView parent, final View v, final int groupPosition, final int childPosition, final long id) {
-                setFilterResult(groupPosition, childPosition);
+                setFilterResult(getFilterFromPosition(groupPosition, childPosition));
                 return true;
             }
 
         });
     }
 
-    public static @Nullable IFilter getFilterFromPosition(final int groupPosition, final int childPosition) {
+    private static @Nullable IFilter getFilterFromPosition(final int groupPosition, final int childPosition) {
         if (groupPosition < 0 || childPosition < 0) {
             return null;
         }
@@ -133,8 +233,7 @@ public class FilterActivity extends AbstractActionBarActivity {
     }
 
     /**
-     * After calling this method, the calling activity must implement onActivityResult, and check the
-     * {@link #EXTRA_FILTER_RESULT}.
+     * After calling this method, the calling activity must implement onActivityResult.
      */
     public static void selectFilter(@NonNull final Activity context) {
         context.startActivityForResult(new Intent(context, FilterActivity_.class), REQUEST_SELECT_FILTER);
@@ -142,13 +241,14 @@ public class FilterActivity extends AbstractActionBarActivity {
 
     @OptionsItem(R.id.menu_reset_filter)
     void resetFilter() {
-        setFilterResult(-1, -1);
+        setFilterResult(null);
     }
 
-    private void setFilterResult(final int groupPosition, final int childPosition) {
+    private void setFilterResult(final IFilter filter) {
+        FilterHolder.setCurrentFilter(filter);
         final Intent resultIntent = new Intent();
-        resultIntent.putExtra(EXTRA_FILTER_RESULT, new int[] { groupPosition, childPosition });
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
+
 }

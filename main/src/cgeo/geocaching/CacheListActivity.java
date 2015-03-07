@@ -22,6 +22,7 @@ import cgeo.geocaching.export.FieldnoteExport;
 import cgeo.geocaching.export.GpxExport;
 import cgeo.geocaching.files.GPXImporter;
 import cgeo.geocaching.filter.FilterActivity;
+import cgeo.geocaching.filter.FilterHolder;
 import cgeo.geocaching.filter.IFilter;
 import cgeo.geocaching.list.AbstractList;
 import cgeo.geocaching.list.ListNameMemento;
@@ -1055,8 +1056,7 @@ public class CacheListActivity extends AbstractListActivity implements FilteredA
             }
         }
         else if (requestCode == FilterActivity.REQUEST_SELECT_FILTER && resultCode == Activity.RESULT_OK) {
-            final int[] filterIndex = data.getIntArrayExtra(FilterActivity.EXTRA_FILTER_RESULT);
-            setFilter(FilterActivity.getFilterFromPosition(filterIndex[0], filterIndex[1]));
+            setFilter(FilterHolder.getCurrentFilter());
         }
 
         refreshCurrentList();

@@ -4,36 +4,28 @@ import cgeo.geocaching.Geocache;
 import cgeo.geocaching.R;
 
 import org.eclipse.jdt.annotation.NonNull;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.jdt.annotation.Nullable;
 
 class DifficultyFilter extends AbstractRangeFilter {
 
-    public DifficultyFilter(final int difficulty) {
-        super(R.string.cache_difficulty, difficulty);
+    static final int DIFFICULTY_MIN = 1;
+    static final int DIFFICULTY_MAX = 5;
+
+    private DifficultyFilter(final float min, final float max) {
+        super(R.string.cache_difficulty, min, max);
     }
 
     @Override
     public boolean accepts(@NonNull final Geocache cache) {
-        final float difficulty = cache.getDifficulty();
-        return rangeMin <= difficulty && difficulty < rangeMax;
+        return isInRange(cache.getDifficulty());
     }
 
-    public static class Factory implements IFilterFactory {
-
-        private static final int DIFFICULTY_MIN = 1;
-        private static final int DIFFICULTY_MAX = 5;
-
-        @Override
-        @NonNull
-        public List<IFilter> getFilters() {
-            final ArrayList<IFilter> filters = new ArrayList<>(DIFFICULTY_MAX);
-            for (int difficulty = DIFFICULTY_MIN; difficulty <= DIFFICULTY_MAX; difficulty++) {
-                filters.add(new DifficultyFilter(difficulty));
-            }
-            return filters;
+    @Nullable
+    static DifficultyFilter create(final float min, final float max) {
+        if (min == DIFFICULTY_MIN && max == DIFFICULTY_MAX) {
+            return null;
         }
-
+        return new DifficultyFilter(min, max);
     }
+
 }

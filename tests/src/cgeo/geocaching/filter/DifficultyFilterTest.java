@@ -14,13 +14,11 @@ public class DifficultyFilterTest extends CGeoTestCase {
         final Geocache hard = new Geocache();
         hard.setDifficulty(5f);
 
-        final DifficultyFilter easyFilter = new DifficultyFilter(1);
+        final DifficultyFilter easyFilter = DifficultyFilter.create(1, 2);
+        assert easyFilter != null;
 
         assertThat(easyFilter.accepts(easy)).isTrue();
         assertThat(easyFilter.accepts(hard)).isFalse();
     }
 
-    public static void testAllFilters() {
-        assertThat(new DifficultyFilter.Factory().getFilters().size() == 5).isTrue(); // difficulty ranges from 1 to 5
-    }
 }

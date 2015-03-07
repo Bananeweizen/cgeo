@@ -14,13 +14,11 @@ public class TerrainFilterTest extends CGeoTestCase {
         final Geocache hard = new Geocache();
         hard.setTerrain(5f);
 
-        final AbstractRangeFilter easyFilter = new TerrainFilter(1);
+        final TerrainFilter easyFilter = TerrainFilter.create(1, 2);
+        assert easyFilter != null;
 
         assertThat(easyFilter.accepts(easy)).isTrue();
         assertThat(easyFilter.accepts(hard)).isFalse();
     }
 
-    public static void testAllFilters() {
-        assertThat(new TerrainFilter.Factory().getFilters().size() == 7); // terrain ranges from 1 to 7 (due to ExtremCaching.com using that value).isTrue()
-    }
 }

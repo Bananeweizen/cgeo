@@ -4,35 +4,28 @@ import cgeo.geocaching.Geocache;
 import cgeo.geocaching.R;
 
 import org.eclipse.jdt.annotation.NonNull;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.jdt.annotation.Nullable;
 
 class TerrainFilter extends AbstractRangeFilter {
 
-    public TerrainFilter(final int terrain) {
-        super(R.string.cache_terrain, terrain);
+    public static final int TERRAIN_MIN = 1;
+    public static final int TERRAIN_MAX = 7;
+
+    private TerrainFilter(final float min, final float max) {
+        super(R.string.cache_terrain, min, max);
     }
 
     @Override
     public boolean accepts(@NonNull final Geocache cache) {
-        final float terrain = cache.getTerrain();
-        return rangeMin <= terrain && terrain < rangeMax;
+        return isInRange(cache.getTerrain());
     }
 
-    public static class Factory implements IFilterFactory {
-        private static final int TERRAIN_MIN = 1;
-        private static final int TERRAIN_MAX = 7;
-
-        @Override
-        @NonNull
-        public List<IFilter> getFilters() {
-            final ArrayList<IFilter> filters = new ArrayList<>(TERRAIN_MAX);
-            for (int terrain = TERRAIN_MIN; terrain <= TERRAIN_MAX; terrain++) {
-                filters.add(new TerrainFilter(terrain));
-            }
-            return filters;
+    @Nullable
+    static TerrainFilter create(final float min, final float max) {
+        if (min == TERRAIN_MIN && max == TERRAIN_MAX) {
+            return null;
         }
+        return new TerrainFilter(min, max);
     }
 
 }
