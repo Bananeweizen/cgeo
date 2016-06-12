@@ -1,25 +1,5 @@
 package cgeo.geocaching;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.media.AudioManager;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.TextView;
-import android.widget.ToggleButton;
-
-import com.github.amlcurran.showcaseview.targets.ActionItemTarget;
-
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import cgeo.geocaching.activity.AbstractActionBarActivity;
 import cgeo.geocaching.activity.ShowcaseViewBuilder;
 import cgeo.geocaching.enumerations.LoadFlags;
@@ -28,6 +8,7 @@ import cgeo.geocaching.location.Units;
 import cgeo.geocaching.maps.DefaultMap;
 import cgeo.geocaching.models.Geocache;
 import cgeo.geocaching.models.Waypoint;
+import cgeo.geocaching.playservices.GeofenceProvider;
 import cgeo.geocaching.sensors.GeoData;
 import cgeo.geocaching.sensors.GeoDirHandler;
 import cgeo.geocaching.sensors.GpsStatusProvider.Status;
@@ -41,6 +22,27 @@ import cgeo.geocaching.ui.WaypointSelectionActionProvider;
 import cgeo.geocaching.utils.AngleUtils;
 import cgeo.geocaching.utils.Formatter;
 import cgeo.geocaching.utils.Log;
+
+import com.github.amlcurran.showcaseview.targets.ActionItemTarget;
+
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.media.AudioManager;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.TextView;
+import android.widget.ToggleButton;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -103,6 +105,7 @@ public class CompassActivity extends AbstractActionBarActivity {
         // set activity title just once, independent of what target is switched to
         if (cache != null) {
             setCacheTitleBar(cache);
+            GeofenceProvider.getInstance(this).startTracking(cache);
         } else {
             setTitle(StringUtils.defaultIfBlank(extras.getString(Intents.EXTRA_NAME), res.getString(R.string.navigation)));
         }
