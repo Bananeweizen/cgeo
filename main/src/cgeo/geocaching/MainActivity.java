@@ -7,6 +7,7 @@ import cgeo.geocaching.connector.capability.ILogin;
 import cgeo.geocaching.connector.gc.PocketQueryListActivity;
 import cgeo.geocaching.enumerations.CacheType;
 import cgeo.geocaching.enumerations.StatusCode;
+import cgeo.geocaching.fieldnotes.FieldNotesActivity;
 import cgeo.geocaching.helper.UsefulAppsActivity;
 import cgeo.geocaching.list.PseudoList;
 import cgeo.geocaching.list.StoredList;
@@ -365,6 +366,9 @@ public class MainActivity extends AbstractActionBarActivity {
                 return true;
             case R.id.menu_settings:
                 startActivityForResult(new Intent(this, SettingsActivity.class), Intents.SETTINGS_ACTIVITY_REQUEST_CODE);
+                return true;
+            case R.id.menu_field_notes:
+                startActivity(new Intent(this, FieldNotesActivity.class));
                 return true;
             case R.id.menu_history:
                 startActivity(CacheListActivity.getHistoryIntent(this));

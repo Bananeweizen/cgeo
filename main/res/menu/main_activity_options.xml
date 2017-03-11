@@ -11,6 +11,11 @@
         app:iconifiedByDefault="true"
         app:showAsAction="collapseActionView|always"/>
     <item
+        android:id="@+id/menu_field_notes"
+        android:title="@string/export_fieldnotes"
+        app:showAsAction="ifRoom">
+    </item>
+    <item
         android:id="@+id/menu_history"
         android:icon="@drawable/ic_menu_recent_history"
         android:title="@string/menu_history"

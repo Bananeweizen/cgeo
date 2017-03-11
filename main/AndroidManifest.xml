@@ -197,6 +197,16 @@
                 android:value="cgeo.geocaching.SearchActivity" />
         </activity>
         <activity
+            android:name="cgeo.geocaching.fieldnotes.FieldNotesActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/export_fieldnotes"
+            android:parentActivityName="cgeo.geocaching.MainActivity"
+            android:windowSoftInputMode="stateHidden" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="cgeo.geocaching.MainActivity" />
+        </activity>
+        <activity
             android:name=".settings.SettingsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/settings_titlebar"

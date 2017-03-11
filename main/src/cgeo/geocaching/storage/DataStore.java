@@ -13,6 +13,7 @@ import cgeo.geocaching.enumerations.LoadFlags.LoadFlag;
 import cgeo.geocaching.enumerations.LoadFlags.RemoveFlag;
 import cgeo.geocaching.enumerations.LoadFlags.SaveFlag;
 import cgeo.geocaching.enumerations.WaypointType;
+import cgeo.geocaching.fieldnotes.CacheFieldNote;
 import cgeo.geocaching.list.AbstractList;
 import cgeo.geocaching.list.PseudoList;
 import cgeo.geocaching.list.StoredList;
@@ -2757,6 +2758,41 @@ public class DataStore {
             Log.e("DataStore.readLists", e);
         }
         return lists;
+    }
+
+    @NonNull
+    public static List<CacheFieldNote> getFieldNotes() {
+        init();
+
+        final List<CacheFieldNote> fieldNotes = new ArrayList<>();
+
+        try {
+            final Cursor cursor = database.rawQuery("SELECT _id, type, log, date, geocode" + " FROM " + dbTableLogsOffline + " ORDER BY date ASC", new String[0]);
+            final Map<String, LogEntry> logs = new HashMap<>();
+            final ArrayList<String> geocodes = new ArrayList<>();
+            while (cursor.moveToNext()) {
+                final LogEntry log = new LogEntry.Builder()
+                        .setId(cursor.getInt(0))
+                        .setLogType(LogType.getById(cursor.getInt(1)))
+                        .setLog(cursor.getString(2))
+                        .setDate(cursor.getLong(3))
+                        .build();
+                final String geocode = cursor.getString(4);
+                logs.put(geocode, log);
+                geocodes.add(geocode);
+            }
+            cursor.close();
+            final Set<Geocache> caches = loadCaches(geocodes, LoadFlags.LOAD_CACHE_OR_DB);
+            for (final Geocache geocache : caches) {
+                final LogEntry log = logs.get(geocache.getGeocode());
+                if (log != null) {
+                    fieldNotes.add(new CacheFieldNote(geocache, log));
+                }
+            }
+        } catch (final Exception e) {
+            Log.e("DataStore.readLists", e);
+        }
+        return fieldNotes;
     }
 
     @NonNull
